@@ -22,8 +22,9 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / 'pitch_economia.md'
 assert SOURCE.exists(), 'Arquivo de origem não encontrado.'
-OUT = ROOT / 'pitch_economia_executivo.pptx'
-PREVIEWS = Path('/tmp/pitch-economia-preview')
+OUT = ROOT / 'pitch_economia_executivo_v3.pptx'
+PDF_OUT = ROOT / 'pitch_economia_executivo_v3_previa.pdf'
+PREVIEWS = Path('/tmp/pitch-economia-preview-v3')
 PREVIEWS.mkdir(exist_ok=True)
 
 NAVY = '102C36'
@@ -73,7 +74,7 @@ prs.core_properties.title = 'LogiBrasil | Solarização do centro de distribuiç
 prs.core_properties.subject = 'Pitch executivo de economia — caso fictício'
 prs.core_properties.author = 'LogiBrasil — caso acadêmico'
 prs.core_properties.keywords = 'WACC, TIR, VPL, energia solar, pitch de economia'
-prs.core_properties.comments = 'Base: pitch_economia.md. Premissas ilustrativas; indicadores recalculados.'
+prs.core_properties.comments = 'Versão 3. Caso original LogiBrasil. Layout da versão 2; notas de fala reduzidas para dois minutos. Premissas ilustrativas; indicadores recalculados.'
 
 SCALE = 120
 FONT = Path('/usr/share/fonts/truetype/lato')
@@ -202,31 +203,41 @@ for x, value, label in [(.65,'R$ 4,0 mi','INVESTIMENTO INICIAL'),(4.73,'1 MWp','
     s.text(x+.22, 5.08, 3.43, .63, value, 33, GREEN, True)
     s.text(x+.22, 5.84, 3.43, .23, label, 10, 'D2DFDF')
 s.text(.65, 6.49, 11.8, .23, 'Objetivo complementar: reduzir emissões e trazer previsibilidade ao custo logístico.', 11, 'B8CACB')
-s.notes('TEMPO: 0:00–0:25\n\nProponho instalar uma usina solar de 1 MWp no centro de distribuição da LogiBrasil em Cajamar. O investimento é de R$ 4 milhões e o horizonte de análise é de 15 anos. O objetivo é reduzir a conta de energia e a exposição a reajustes tarifários, além de reduzir emissões. Este é um caso fictício e todos os números são premissas acadêmicas.\n\nOrigem: pitch_economia.md. Não há orçamento de fornecedor, estudo de geração ou dados reais da empresa.')
+s.notes('0:00–0:25 | PROJETO\n\nEste é um caso fictício da LogiBrasil. A proposta é instalar uma usina solar de um megawatt-pico no telhado do centro de distribuição de Cajamar, para reduzir a conta de energia. O investimento é de quatro milhões de reais, com análise de quinze anos.')
 s.finish()
 
-# 02 — Estrutura financeira: pesos e custos explícitos.
+# 02 — Estrutura financeira: fontes → custos após tributos → WACC.
 s = Slide(2, 'Estrutura de capital')
 s.text(.65, 1.16, 9, .28, '02  /  FINANCIAMENTO', 11, TEAL, True)
-s.text(.65, 1.66, 11.9, .7, 'Capital próprio e dívida: WACC de 11,4%', 31, INK, True)
-s.text(.65, 2.48, 7.5, .32, 'COMPOSIÇÃO DO INVESTIMENTO  /  R$ 4,0 MILHÕES', 11, GRAY, True)
-s.rect(.65, 3.04, 2.66, .58, TEAL)
-s.rect(3.31, 3.04, 4.94, .58, GREEN)
-s.text(.84, 3.18, 2.25, .3, '35%  /  PRÓPRIO', 12, WHITE, True)
-s.text(3.50, 3.18, 4.5, .3, '65%  /  DÍVIDA', 12, INK, True)
-for x,value,label,cost,detail in [(.65,'R$ 1,4 mi','CAPITAL PRÓPRIO','17,0% a.a.','Retorno exigido pelos acionistas'),(4.58,'R$ 2,6 mi','FINANCIAMENTO VERDE','12,8% a.a.','Custo antes dos tributos')]:
-    s.text(x, 3.98, 3.55, .26, label, 10, GRAY, True)
-    s.text(x, 4.40, 3.55, .57, value, 28, INK, True)
-    s.text(x, 5.16, 3.55, .37, cost, 20, TEAL, True)
-    s.text(x, 5.66, 3.55, .5, detail, 12, GRAY)
-s.rect(8.75, 2.69, 3.93, 3.52, NAVY, radius=True)
-s.text(9.04, 2.99, 3.35, .28, 'CUSTO MÉDIO DO CAPITAL', 10, GREEN, True)
-s.text(9.01, 3.54, 3.42, .9, '11,4%', 49, WHITE, True)
-s.text(9.05, 4.47, 3.3, .28, 'AO ANO', 11, GREEN, True)
-s.line(9.04, 5.02, 12.38, 5.02, '46616A', 1)
-s.text(9.04, 5.22, 3.34, .65, 'Dívida após tributos: 8,45% a.a.\nPrazo do financiamento: 10 anos', 12, 'D2DFDF')
-s.text(.65, 6.49, 12.03, .32, 'Premissa fiscal: Lucro Real, juros integralmente dedutíveis e aproveitamento do benefício marginal de 34%.', 10, GRAY)
-s.notes('TEMPO: 0:25–0:55\n\nA proposta combina 35% de capital próprio e 65% de financiamento verde. O retorno exigido pelos acionistas é de 17% ao ano e a dívida custa 12,8%. Assumindo Lucro Real e aproveitamento integral do benefício fiscal de 34%, o custo da dívida após tributos cai para 8,45%. Ponderando essas fontes, o WACC é de 11,4% ao ano: o custo de capital usado para avaliar o projeto.\n\nConta sem arredondamento: 0,35 × 0,17 + 0,65 × 0,128 × (1 − 0,34) = 0,114412. O financiamento em 10 anos é uma premissa; o documento não define o cronograma de amortização. Os custos e as condições do crédito verde são hipotéticos.')
+s.text(.65, 1.66, 11.9, .7, 'Do custo de cada fonte ao custo médio de capital', 30, INK, True)
+s.text(.65, 2.48, 8.05, .32, 'COMPOSIÇÃO DO INVESTIMENTO  /  R$ 4,0 MILHÕES', 11, GRAY, True)
+s.rect(.65, 3.04, 2.8525, .54, TEAL)
+s.rect(3.5025, 3.04, 5.2975, .54, GREEN)
+s.text(.84, 3.16, 2.4, .3, '35%  /  PRÓPRIO', 12, WHITE, True)
+s.text(3.70, 3.16, 4.8, .3, '65%  /  DÍVIDA', 12, INK, True)
+
+# Os dois custos ficam alinhados por fonte, fora do quadro do resultado.
+for x,w,label in [(.65,2.20,'FONTE'),(3.0,.65,'PESO'),(3.87,1.30,'VALOR'),(5.46,1.40,'CUSTO ANTES\nDOS TRIBUTOS'),(7.22,1.58,'CUSTO APÓS\nOS TRIBUTOS')]:
+    s.text(x,3.89,w,.48,label,10,GRAY,True)
+s.line(.65,4.49,8.80,4.49,LINE,1)
+for y,source,weight,amount,before,after in [(4.72,'Capital próprio','35%','R$ 1,4 mi','17,0%','17,0%'),(5.37,'Financiamento verde','65%','R$ 2,6 mi','12,8%','8,45%')]:
+    s.text(.65,y,2.20,.5,source,14,INK,True)
+    s.text(3.0,y,.65,.35,weight,14,INK)
+    s.text(3.87,y,1.36,.35,amount,14,INK)
+    s.text(5.46,y,1.40,.39,before,18,GRAY)
+    s.text(7.22,y,1.58,.39,after,18,TEAL,True)
+s.line(.65,5.99,8.80,5.99,LINE,1)
+s.text(.65,6.17,8.15,.3,'WACC = 35% × 17,0% + 65% × 8,448% = 11,4412% a.a.',12,TEAL,True)
+
+# O quadro verde apresenta somente o resultado e sua interpretação.
+s.rect(9.25,2.69,3.43,3.64,GREEN,radius=True)
+s.text(9.52,2.99,2.90,.28,'RESULTADO PONDERADO',10,INK,True)
+s.text(9.47,3.65,2.99,.9,'11,4%',46,INK,True)
+s.text(9.52,4.61,2.90,.3,'WACC AO ANO',12,INK,True)
+s.line(9.52,5.10,12.40,5.10,'8FBB65',1)
+s.text(9.52,5.34,2.89,.66,'Custo médio do capital\npara avaliar o projeto.',13,INK)
+s.text(.65,6.61,12.03,.22,'Taxas anuais. Premissa: Lucro Real, juros dedutíveis e aproveitamento integral do benefício fiscal marginal de 34%.',9,GRAY)
+s.notes('0:25–1:05 | ESTRUTURA DE CAPITAL\n\nUsaremos trinta e cinco por cento de capital próprio e sessenta e cinco por cento de dívida. O capital próprio custa dezessete por cento ao ano; a dívida, doze vírgula oito. Assumindo aproveitamento integral do benefício fiscal de trinta e quatro por cento, a dívida passa a custar oito vírgula quarenta e cinco por cento. Ponderando esses custos, chegamos ao WACC de onze vírgula quatro por cento ao ano.')
 s.finish()
 
 # 03 — Retorno: VPL, caixa, payback e comparação TIR/WACC.
@@ -247,7 +258,7 @@ s.rect(8.75, 4.43, 3.93, 1.92, PALE, radius=True)
 s.text(9.01, 4.64, 3.4, .63, '+7,1 p.p.', 33, TEAL, True)
 s.text(9.02, 5.36, 3.3, .73, 'TIR acima do WACC\nCaixa / investimento: 20,1% a.a.', 13, INK)
 s.text(.65, 6.52, 12.03, .23, 'Fluxos do projeto: −R$ 4,0 mi no início; +R$ 805 mil ao fim de cada ano, por 15 anos. Sem valor residual.', 10, GRAY)
-s.notes('TEMPO: 0:55–1:30\n\nO cenário considera R$ 805 mil anuais de caixa livre do projeto, após despesas operacionais, tributos operacionais e reinvestimentos, mas antes do serviço da dívida. Com 15 fluxos anuais constantes e investimento inicial de R$ 4 milhões, a TIR é de 18,6%, acima do WACC em 7,1 pontos percentuais. O VPL é positivo em R$ 1,65 milhão e o payback simples é de aproximadamente cinco anos. O caixa anual representa 20,1% do investimento inicial.\n\nConferência: TIR = 18,5593317%; WACC = 11,4412%; diferença = 7,1181 p.p.; VPL = R$ 1.650.376,11; payback simples = 4,9689 anos. O VPL usa o WACC sem arredondamento. Os 20,1% representam caixa anual / investimento inicial, uma aproximação de retorno de caixa, não um ROI contábil nem ROIC. Não deduzir juros novamente do caixa do projeto ao descontá-lo pelo WACC.\n\nCorreções ao texto-base: TIR de 18,4% para 18,6%; VPL de R$ 1,66 mi para R$ 1,65 mi; spread de 7,0 para 7,1 p.p. A TIR do acionista de 25,5% não foi reproduzida: faltam cronograma contratual da dívida e fluxos detalhados ao acionista.')
+s.notes('1:05–1:35 | RETORNO\n\nProjetamos oitocentos e cinco mil reais de caixa livre por ano. A TIR é de dezoito vírgula seis por cento, acima do WACC. O VPL é positivo em um milhão e seiscentos e cinquenta mil reais, com payback simples de cinco anos. Assim, o retorno esperado supera o custo de capital.')
 s.finish()
 
 # 04 — Decisão: condições e riscos, sem repetição dos detalhes financeiros.
@@ -262,7 +273,7 @@ for x,num,label,desc in cards:
     s.text(x+.23,5.02,3.41,.29,label,11,WHITE,True)
     s.text(x+.23,5.47,3.41,.58,desc,13,'D2DFDF')
 s.text(.65,6.49,12.03,.23,'Riscos centrais: geração abaixo da estimativa e financiamento acima da taxa prevista.',11,'B8CACB')
-s.notes('TEMPO: 1:30–2:00\n\nMinha recomendação é aprovar o investimento, condicionado à validação das premissas. O projeto apresenta VPL positivo e retorno acima do custo de capital, além de reduzir uma despesa operacional. Antes da contratação, precisamos confirmar três pontos: o custo do financiamento, a geração de energia com garantia de desempenho e o aproveitamento do benefício fiscal. Com essas condições atendidas, o projeto pode criar valor e melhorar a previsibilidade dos custos do centro de distribuição.\n\nOs indicadores são ilustrativos e dependem de fluxo de caixa que ainda precisa ser validado por orçamento e estudo técnico. Retorno projetado não é garantia de resultado.')
+s.notes('1:35–1:55 | RECOMENDAÇÃO\n\nRecomendo aprovar o projeto, condicionado à confirmação do orçamento, da geração de energia, da capacidade do telhado e das condições de financiamento. Com essas premissas validadas, o investimento pode reduzir custos e criar valor para a empresa.\n\n[Encerrar até 1:55. Reservar os cinco segundos finais para eventuais atrasos. Não avançar ao apêndice durante o pitch.]')
 s.finish()
 
 # 05 — Apêndice técnico para perguntas, fora dos dois minutos.
@@ -305,8 +316,8 @@ for i,im in enumerate(images):
     thumb=im.resize((768,432))
     thumbs.paste(thumb,(22+(i%2)*790,22+(i//2)*510))
 thumbs.save(PREVIEWS/'visao_geral.png')
-images[0].save(ROOT/'pitch_economia_executivo_previa.pdf',save_all=True,append_images=images[1:],resolution=120)
+images[0].save(PDF_OUT,save_all=True,append_images=images[1:],resolution=120)
 print(f'Gerado: {OUT}')
-print(f'Prévia: {ROOT / "pitch_economia_executivo_previa.pdf"}')
+print(f'Prévia: {PDF_OUT}')
 print(f'Slides: {len(check.slides)} | TIR: {IRR:.8%} | WACC: {WACC:.6%} | VPL: R$ {NPV:.2f}')
 print(f'Prévia visual: {PREVIEWS / "visao_geral.png"}')
