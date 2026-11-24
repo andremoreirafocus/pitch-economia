@@ -1,0 +1,20 @@
+Resumo do trabalho:
+O que é o trabalho
+Uma apresentação curta (aproximadamente 2 minutos) sobre um projeto real ou fictício da empresa de cada aluno
+
+O que deve conter
+Descrição do projeto: o que é, o que se pretende fazer
+Estrutura de capital: de onde vem o recurso (capital próprio, dívida, financiamento, caixa)
+Indicadores de retorno: TIR, ROI, ROIC — e se o retorno faz sentido frente ao custo de capital
+Custo de capital: mencionar custo de dívida, custo de capital próprio e, se possível, o WACC
+Quanto mais conceitos financeiros incluídos, melhor
+
+O que NÃO é obrigatório
+Não precisa informar o destino dos lucros/geração de caixa (opcional)
+Não é uma avaliação formal — o objetivo é mostrar conforto com os conceitos
+
+Quando é a entrega
+A apresentação será na segunda parte da próxima aula (terça-feira, 24 de novembro de 2026), após o intervalo
+
+Observação importante
+MARCO prometeu enviar o enunciado escrito e os slides por escrito para o grupo (via coordenação)
